@@ -1,0 +1,29 @@
+<IfModule mod_ssl.c>
+    <VirtualHost *:443>
+        DocumentRoot /var/www/html/public
+
+        ErrorLog ${APACHE_LOG_DIR}/ssl-error.log
+        CustomLog ${APACHE_LOG_DIR}/ssl-access.log combined
+
+        Protocols h2 http/1.1
+
+        SSLEngine on
+
+        SSLCertificateFile    /etc/ssl/certs/ssl-cert-snakeoil.pem
+        SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
+
+        <FilesMatch "\.(cgi|shtml|phtml|php)$">
+                SSLOptions +StdEnvVars
+        </FilesMatch>
+
+        <Directory /var/www/html/public>
+                Options Indexes FollowSymLinks
+                AllowOverride All
+                Require all granted
+        </Directory>
+
+        <Directory /usr/lib/cgi-bin>
+                SSLOptions +StdEnvVars
+        </Directory>
+    </VirtualHost>
+</IfModule>

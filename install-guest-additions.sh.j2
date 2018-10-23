@@ -1,0 +1,14 @@
+#!/bin/bash
+
+sudo apt install -y build-essential dkms linux-headers-amd64;
+sudo apt-get clean;
+
+wget http://download.virtualbox.org/virtualbox/5.2.20/VBoxGuestAdditions_5.2.20.iso;
+sudo mount -o loop VBoxGuestAdditions_5.2.20.iso /media/cdrom;
+cp /media/cdrom/VBoxLinuxAdditions.run ./;
+sudo umount /media/cdrom;
+rm -f VBoxGuestAdditions_5.1.22.iso;
+sudo ./VBoxLinuxAdditions.run;
+rm -f VBoxLinuxAdditions.run;
+
+rm -f $0;

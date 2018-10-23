@@ -1,0 +1,160 @@
+---
+- hosts: all
+  tasks:
+  - name: update system
+    apt:
+      upgrade: dist
+      update_cache: yes
+    become: true
+
+  - name: install utilities
+    apt:
+      name: '{{ item }}'
+      state: present
+    become: true
+    with_items:
+    - zip
+
+  - name: copy install-guest-additions.sh
+    template:
+      src: install-guest-additions.sh.j2
+      dest: /home/vagrant/install-guest-additions.sh
+      mode: 0700
+
+  - name: ensure Apache is installed
+    apt:
+      name: apache2
+      state: present
+    become: true
+
+  - name: ensure Apache document root exists
+    file:
+      path: /var/www/html/public
+      state: directory
+      owner: root
+      group: root
+    become: true
+
+  - name: create HTTP vhosts
+    template:
+      src: apache-http-vhost.j2
+      dest: /etc/apache2/sites-available/000-default.conf
+      owner: root
+      mode: 0644
+    become: true
+
+  - name: create SSL vhosts
+    template:
+      src: apache-ssl-vhost.j2
+      dest: /etc/apache2/sites-available/default-ssl.conf
+      owner: root
+      mode: 0644
+    become: true
+
+  - name: ensure rewrites are on
+    apache2_module:
+      name: rewrite
+      state: present
+    become: true
+
+  - name: ensure SSL is set
+    apache2_module:
+      name: ssl
+      state: present
+    become: true
+
+  - name: ensure HTTP vhosts are set
+    file:
+      src: /etc/apache2/sites-available/000-default.conf
+      dest: /etc/apache2/sites-enabled/000-default.conf
+      state: link
+    become: true
+
+  - name: ensure SSL vhosts are set
+    file:
+      src: /etc/apache2/sites-available/default-ssl.conf
+      dest: /etc/apache2/sites-enabled/default-ssl.conf
+      state: 'link'
+    become: true
+
+  - name: ensure PHP is installed
+    apt:
+      name: '{{ item }}'
+      state: present
+    become: true
+    with_items:
+    - php
+    - php-curl
+    - php-mbstring
+    - php-mysql
+    - php-xml
+    - composer
+
+  - name: ensure nodejs is installed
+    apt:
+      name: nodejs
+      state: present
+      update_cache: yes
+    become: true
+
+  - name: ensure npm is installed
+    apt:
+      name: npm
+      state: present
+      update_cache: yes
+    become: true
+
+  - name: ensure MariaDB is installed
+    apt:
+      name: '{{ item }}'
+      state: present
+    become: true
+    with_items:
+    - mariadb-server
+    - mariadb-client
+    - python-mysqldb
+
+  - name: update mysql root password for all root accounts
+    mysql_user:
+      name: root
+      host: localhost
+      password: vagrant
+    become: true
+
+  - name: copy .my.cnf file with root password credentials
+    template:
+      src: .my.cnf.j2
+      dest: /root/.my.cnf
+      owner: root
+      mode: 0600
+    become: true
+
+  - name: copy utf8mb4.cnf for utf8mb4 support
+    template:
+      src: utf8mb4.cnf.j2
+      dest: /etc/mysql/conf.d/utf8mb4.cnf
+    become: true
+
+  - name: create application database
+    mysql_db:
+      collation: utf8mb4_unicode_ci
+      name: vagrant
+      state: present
+    become: true
+
+  - name: create application database user
+    mysql_user:
+      name: vagrant
+      host: localhost
+      password: vagrant
+      priv: 'vagrant.*:ALL'
+    become: true
+
+  - name: remove unused packages
+    apt:
+      autoremove: yes
+    become: true
+
+  - name: clean apt indexes
+    command: apt-get clean
+    become: true
