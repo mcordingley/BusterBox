@@ -138,7 +138,7 @@
   - name: create application database user
     mysql_user:
       name: vagrant
-      host: localhost
+      host: "%"
       password: vagrant
       priv: 'vagrant.*:ALL'
     become: true
