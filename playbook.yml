@@ -129,15 +129,8 @@
       mode: 0600
     become: true
 
-  - name: copy utf8mb4.cnf for utf8mb4 support
-    template:
-      src: utf8mb4.cnf.j2
-      dest: /etc/mysql/conf.d/utf8mb4.cnf
-    become: true
-
   - name: create application database
     mysql_db:
-      collation: utf8mb4_unicode_ci
       name: vagrant
       state: present
     become: true
