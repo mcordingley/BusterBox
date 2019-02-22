@@ -7,14 +7,6 @@
       update_cache: yes
     become: true
 
-  - name: install utilities
-    apt:
-      name: '{{ item }}'
-      state: present
-    become: true
-    with_items:
-    - zip
-
   - name: copy install-guest-additions.sh
     template:
       src: install-guest-additions.sh.j2
@@ -79,40 +71,27 @@
 
   - name: ensure PHP is installed
     apt:
-      name: '{{ item }}'
+      name: ['php', 'php-curl', 'php-mbstring', 'php-mysql', 'php-xml', 'composer']
       state: present
     become: true
-    with_items:
-    - php
-    - php-curl
-    - php-mbstring
-    - php-mysql
-    - php-xml
-    - composer
 
   - name: ensure nodejs is installed
     apt:
       name: nodejs
       state: present
-      update_cache: yes
     become: true
 
   - name: ensure npm is installed
     apt:
       name: npm
       state: present
-      update_cache: yes
     become: true
 
   - name: ensure MariaDB is installed
     apt:
-      name: '{{ item }}'
+      name: ['mariadb-server', 'mariadb-client', 'python-mysqldb']
       state: present
     become: true
-    with_items:
-    - mariadb-server
-    - mariadb-client
-    - python-mysqldb
 
   - name: update mysql root password for all root accounts
     mysql_user:
