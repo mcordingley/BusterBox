@@ -20,4 +20,6 @@ Database: vagrant
 User: vagrant
 Password: vagrant
 
+## NPM and NodeJS
 
+Node 10.15 and NPM 5.8 are installed to handle your asset build needs.
