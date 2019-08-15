@@ -20,15 +20,4 @@ Database: vagrant
 User: vagrant
 Password: vagrant
 
-Includes utf8mb4 with large prefix support, to fix the "max key length is 767
-bytes" error. The MariaDb configuration changes necessary for this are
-contained within the file /etc/mysql/conf.d/utf8mb4.cnf.
-
-Your MySQL connection will need to have the ROW_FORMAT option set to DYNAMIC to
-complete this. For users of Laravel, this would mean setting your engine parameter
-in config/database.php to "InnoDB ROW_FORMAT=DYNAMIC".
-
-This behavior will be the default in future versions of MariaDB, starting with
-MySQL 5.7/MariaDb 10.2.
-
 
