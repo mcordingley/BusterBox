@@ -11,7 +11,7 @@ has mod_rewrite and mod_ssl enabled.
 
 ## PHP
 
-PHP 7.2 comes installed with the curl, mbstring, mysql, xml extensions installed,
+PHP 7.3 comes installed with the curl, mbstring, mysql, xml extensions installed,
 along with Composer installed via apt.
 
 ## Database Configuration
